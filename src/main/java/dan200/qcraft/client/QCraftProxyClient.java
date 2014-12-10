@@ -17,12 +17,6 @@ limitations under the License.
 
 package dan200.qcraft.client;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import dan200.QCraft;
 import dan200.qcraft.shared.*;
 import net.minecraft.block.Block;
@@ -33,7 +27,6 @@ import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -46,6 +39,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 public class QCraftProxyClient extends QCraftProxyCommon
@@ -66,7 +64,7 @@ public class QCraftProxyClient extends QCraftProxyCommon
     @Override
     public void load()
     {
-        ItemQuantumGoggles.s_renderIndex = RenderingRegistry.addNewArmourRendererPrefix( "qcraft:goggles" );
+        ItemQuantumGoggles.s_renderIndex = RenderingRegistry.addNewArmourRendererPrefix("qcraft:goggles");
 
         super.load();
 
@@ -220,8 +218,8 @@ public class QCraftProxyClient extends QCraftProxyCommon
         {
             if( modelID == QCraft.Blocks.quantumLogic.blockRenderID )
             {
-                int metadata = world.getBlockMetadata( i, j, k );
-                int direction = BlockDirectional.getDirection( metadata );
+                int metadata = world.getBlockMetadata(i, j, k);
+                int direction = BlockDirectional.getDirection(metadata);
                 int subType = ( (BlockQuantumLogic) block ).getSubType( metadata );
 
                 // Draw Base
@@ -315,7 +313,7 @@ public class QCraftProxyClient extends QCraftProxyCommon
                     GL11.glPushMatrix();
                     GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
                     QCraft.Blocks.qBlock.setBlockBounds( 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f );
-                    m_renderBlocks.setRenderBoundsFromBlock( QCraft.Blocks.qBlock );
+                    m_renderBlocks.setRenderBoundsFromBlock(QCraft.Blocks.qBlock);
                     renderInventoryQBlock( m_renderBlocks, QCraft.Blocks.qBlock, item );
                     GL11.glPopMatrix();
                     break;
@@ -409,40 +407,40 @@ public class QCraftProxyClient extends QCraftProxyCommon
 
     private void renderInventoryQBlock( RenderBlocks renderblocks, BlockQBlock block, int type, BlockQBlock.Appearance appearance )
     {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 0, type ) );
-        tessellator.setNormal( 0.0F, -1F, 0.0F );
+        tessellator.getWorldRenderer().func_178980_d(0.0F, -1F, 0.0F);
         renderblocks.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 0, type, appearance ) );
         tessellator.draw();
 
-        tessellator.startDrawingQuads();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 1, type ) );
-        tessellator.setNormal( 0.0F, 1.0F, 0.0F );
+        tessellator.getWorldRenderer().func_178980_d(0.0F, 1.0F, 0.0F);
         renderblocks.renderFaceYPos( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 1, type, appearance ) );
         tessellator.draw();
 
-        tessellator.startDrawingQuads();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 2, type ) );
-        tessellator.setNormal( 0.0F, 0.0F, -1F );
-        renderblocks.renderFaceZNeg( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 2, type, appearance ) );
+        tessellator.getWorldRenderer().func_178980_d(0.0F, 0.0F, -1F);
+        renderblocks.getWorldRenderer().renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIconForType(2, type, appearance));
         tessellator.draw();
 
-        tessellator.startDrawingQuads();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 3, type ) );
-        tessellator.setNormal( 0.0F, 0.0F, 1.0F );
+        tessellator.getWorldRenderer().func_178980_d(0.0F, 0.0F, 1.0F);
         renderblocks.renderFaceZPos( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 3, type, appearance ) );
         tessellator.draw();
 
-        tessellator.startDrawingQuads();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 4, type ) );
-        tessellator.setNormal( -1F, 0.0F, 0.0F );
+        tessellator.getWorldRenderer().func_178980_d(-1F, 0.0F, 0.0F);
         renderblocks.renderFaceXNeg( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 4, type, appearance ) );
         tessellator.draw();
 
-        tessellator.startDrawingQuads();
+        tessellator.getWorldRenderer().startDrawingQuads();
         bindColor( block.getColorForType( 5, type ) );
-        tessellator.setNormal( 1.0F, 0.0F, 0.0F );
+        tessellator.getWorldRenderer().func_178980_d(1.0F, 0.0F, 0.0F);
         renderblocks.renderFaceXPos( block, 0.0D, 0.0D, 0.0D, block.getIconForType( 5, type, appearance ) );
         tessellator.draw();
     }
@@ -468,12 +466,12 @@ public class QCraftProxyClient extends QCraftProxyCommon
         GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
         GL11.glDisable( GL11.GL_ALPHA_TEST );
         mc.renderEngine.bindTexture( texture );
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV( 0.0D, (double) height, -90.0D, 0.0D, 1.0D );
-        tessellator.addVertexWithUV( (double) width, (double) height, -90.0D, 1.0D, 1.0D );
-        tessellator.addVertexWithUV( (double) width, 0.0D, -90.0D, 1.0D, 0.0D );
-        tessellator.addVertexWithUV( 0.0D, 0.0D, -90.0D, 0.0D, 0.0D );
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV(0.0D, (double) height, -90.0D, 0.0D, 1.0D);
+        tessellator.getWorldRenderer().addVertexWithUV((double) width, (double) height, -90.0D, 1.0D, 1.0D);
+        tessellator.getWorldRenderer().addVertexWithUV((double) width, 0.0D, -90.0D, 1.0D, 0.0D);
+        tessellator.getWorldRenderer().addVertexWithUV(0.0D, 0.0D, -90.0D, 0.0D, 0.0D);
         tessellator.draw();
         GL11.glDepthMask( true );
         GL11.glEnable( GL11.GL_DEPTH_TEST );

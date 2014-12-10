@@ -40,7 +40,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Facing;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -109,7 +109,7 @@ public class TileEntityQuantumComputer extends TileEntity
                 Block block = m_blocks[i];
                 if( block != null )
                 {
-                    name = Block.blockRegistry.getNameForObject( block );
+                    name = block.getLocalizedName();
                 }
                 if( name != null && name.length() > 0 )
                 {
@@ -297,14 +297,14 @@ public class TileEntityQuantumComputer extends TileEntity
         return m_storedData;
     }
 
-    private boolean isPillarBase( int x, int y, int z, int side )
+    private boolean isPillarBase(BlockPos pos, int side)
     {
-        if( y < 0 || y >= 256 )
+        if (pos.getY() < 0 || pos.getY() >= 256)
         {
             return false;
         }
 
-        TileEntity entity = worldObj.getTileEntity( x, y, z );
+        TileEntity entity = worldObj.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             TileEntityQBlock quantum = (TileEntityQBlock) entity;
@@ -331,14 +331,14 @@ public class TileEntityQuantumComputer extends TileEntity
         return false;
     }
 
-    private boolean isPillar( int x, int y, int z )
+    private boolean isPillar(BlockPos pos)
     {
-        if( y < 0 || y >= 256 )
+        if (pos.getY() < 0 || pos.getY() >= 256)
         {
             return false;
         }
 
-        Block block = worldObj.getBlock( x, y, z );
+        Block block = worldObj.getBlockState(pos).getBlock();
         if( block == Blocks.obsidian )
         {
             return true;
@@ -346,14 +346,14 @@ public class TileEntityQuantumComputer extends TileEntity
         return false;
     }
 
-    private boolean isGlass( int x, int y, int z )
+    private boolean isGlass(BlockPos pos)
     {
-        if( y < 0 || y >= 256 )
+        if (pos.getY() < 0 || pos.getY() >= 256)
         {
             return false;
         }
 
-        Block block = worldObj.getBlock( x, y, z );
+        Block block = worldObj.getBlockState(pos).getBlock();
         if( block.getMaterial() == Material.glass && !(block instanceof BlockPane) )
         {
             return true;
@@ -372,19 +372,19 @@ public class TileEntityQuantumComputer extends TileEntity
         shape.m_zMax = -99;
         for( int i = 0; i < RANGE; ++i )
         {
-            if( shape.m_xMin == -99 && isPillarBase( xCoord - i - 1, yCoord, zCoord, 5 ) )
+            if (shape.m_xMin == -99 && isPillarBase(new BlockPos(pos.getX() - i - 1, pos.getY(), pos.getZ()), 5))
             {
                 shape.m_xMin = -i;
             }
-            if( shape.m_xMax == -99 && isPillarBase( xCoord + i + 1, yCoord, zCoord, 4 ) )
+            if (shape.m_xMax == -99 && isPillarBase(new BlockPos(pos.getX() + i + 1, pos.getY(), pos.getZ()), 4))
             {
                 shape.m_xMax = i;
             }
-            if( shape.m_zMin == -99 && isPillarBase( xCoord, yCoord, zCoord - i - 1, 3 ) )
+            if (shape.m_zMin == -99 && isPillarBase(new BlockPos(pos.getX(), pos.getY(), pos.getZ() - i - 1), 3))
             {
                 shape.m_zMin = -i;
             }
-            if( shape.m_zMax == -99 && isPillarBase( xCoord, yCoord, zCoord + i + 1, 2 ) )
+            if (shape.m_zMax == -99 && isPillarBase(new BlockPos(pos.getX(), pos.getY(), pos.getZ() + i + 1), 2))
             {
                 shape.m_zMax = i;
             }
@@ -398,10 +398,10 @@ public class TileEntityQuantumComputer extends TileEntity
             // Find Y Min
             for( int i = 1; i < RANGE; ++i )
             {
-                if( isPillar( xCoord + shape.m_xMin - 1, yCoord - i, zCoord ) &&
-                        isPillar( xCoord + shape.m_xMax + 1, yCoord - i, zCoord ) &&
-                        isPillar( xCoord, yCoord - i, zCoord + shape.m_zMin - 1 ) &&
-                        isPillar( xCoord, yCoord - i, zCoord + shape.m_zMax + 1 ) )
+                if (isPillar(new BlockPos(pos.getX() + shape.m_xMin - 1, pos.getY() - i, pos.getZ())) &&
+                        isPillar(new BlockPos(pos.getX() + shape.m_xMax + 1, pos.getY() - i, pos.getZ())) &&
+                        isPillar(new BlockPos(pos.getX(), pos.getY() - i, pos.getZ() + shape.m_zMin - 1)) &&
+                        isPillar(new BlockPos(pos.getX(), pos.getY() - i, pos.getZ() + shape.m_zMax + 1)))
                 {
                     shape.m_yMin = -i;
                 }

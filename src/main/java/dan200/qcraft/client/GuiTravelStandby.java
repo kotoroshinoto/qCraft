@@ -17,13 +17,13 @@ limitations under the License.
 
 package dan200.qcraft.client;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import dan200.qcraft.shared.LostLuggage;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class GuiTravelStandby extends GuiScreen
 {

@@ -19,6 +19,7 @@ package dan200.qcraft.shared;
 
 import dan200.QCraft;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -26,6 +27,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -158,11 +161,11 @@ public class ItemQuantumComputer extends ItemBlock
     }
 
     @Override
-    public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata )
+    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState metadata)
     {
-        if( super.placeBlockAt( stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata ) )
+        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, metadata))
         {
-            TileEntity entity = world.getTileEntity( x, y, z );
+            TileEntity entity = world.getTileEntity(pos);
             if( entity != null && entity instanceof TileEntityQuantumComputer )
             {
                 TileEntityQuantumComputer quantum = (TileEntityQuantumComputer) entity;

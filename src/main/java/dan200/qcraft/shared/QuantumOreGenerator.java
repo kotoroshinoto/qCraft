@@ -17,12 +17,12 @@ limitations under the License.
 
 package dan200.qcraft.shared;
 
-import cpw.mods.fml.common.IWorldGenerator;
 import dan200.QCraft;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public class QuantumOreGenerator implements IWorldGenerator
     @Override
     public void generate( Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider )
     {
-        if( !world.provider.isHellWorld && world.provider.terrainType != WorldType.FLAT )
+        if (!world.provider.field_76575_d && world.provider.terrainType != WorldType.FLAT)
         {
             generateSurface( world, random, chunkX * 16, chunkZ * 16 );
         }

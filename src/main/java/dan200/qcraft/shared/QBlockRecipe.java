@@ -42,6 +42,11 @@ public class QBlockRecipe implements IRecipe
     }
 
     @Override
+    public ItemStack[] func_179532_b(InventoryCrafting inventoryCrafting) {
+        return new ItemStack[0];
+    }
+
+    @Override
     public boolean matches( InventoryCrafting _inventory, World world )
     {
         return ( getCraftingResult( _inventory ) != null );

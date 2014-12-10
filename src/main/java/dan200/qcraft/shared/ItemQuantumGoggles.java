@@ -117,7 +117,7 @@ public class ItemQuantumGoggles extends ItemArmor
     }
 
     @Override
-    public void renderHelmetOverlay( ItemStack stack, EntityPlayer player, ScaledResolution resolution, float partialTicks, boolean hasScreen, int mouseX, int mouseY )
+    public void renderHelmetOverlay(ItemStack stack, EntityPlayer player, ScaledResolution resolution, float partialTicks)
     {
         switch( stack.getItemDamage() )
         {

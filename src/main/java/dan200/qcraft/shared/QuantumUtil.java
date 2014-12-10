@@ -18,8 +18,10 @@ limitations under the License.
 package dan200.qcraft.shared;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.EnumFaceDirection;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.Facing;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -33,6 +35,7 @@ public class QuantumUtil
     public static boolean getRedstoneSignal( World world, int x, int y, int z, int side )
     {
         Block block = getBlock( world, x, y, z );
+        BlockPos pos = new BlockPos(x, y, z);
         if( block != null )
         {
             if( block == Blocks.redstone_wire )
@@ -42,11 +45,10 @@ public class QuantumUtil
             }
             else if( block.canProvidePower() )
             {
-                int testSide = Facing.oppositeSide[ side ];
-                int power = block.isProvidingWeakPower( world, x, y, z, testSide );
+                EnumFacing testSide = EnumFacing.values()[side];//oppositeSide[ side ];
+                int power = block.isProvidingWeakPower(world, pos, block.getDefaultState(), testSide);
                 return ( power > 0 ) ? true : false;
-            }
-            else if( world.isBlockNormalCubeDefault( x, y, z, false ) )
+            } else if (world.func_175677_d(pos, false))
             {
                 for( int i = 0; i < 6; ++i )
                 {
@@ -55,10 +57,13 @@ public class QuantumUtil
                         int testX = x + Facing.offsetsXForSide[ i ];
                         int testY = y + Facing.offsetsYForSide[ i ];
                         int testZ = z + Facing.offsetsZForSide[ i ];
+                        BlockPos pos1 = new BlockPos(testX, testY, testZ);
                         Block neighbour = getBlock( world, testX, testY, testZ );
+
                         if( neighbour != null && neighbour.canProvidePower() )
                         {
-                            int power = neighbour.isProvidingStrongPower( world, testX, testY, testZ, i );
+                            //TODO:Review
+                            int power = neighbour.isProvidingStrongPower(world, pos1, block.getDefaultState(), EnumFacing.getFront(i));
                             if( power > 0 )
                             {
                                 return true;

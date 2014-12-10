@@ -19,7 +19,6 @@ package dan200.qcraft.shared;
 
 import dan200.QCraft;
 import net.minecraft.block.*;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,11 +30,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -197,7 +195,7 @@ public class BlockQBlock extends BlockSand
         setHardness( 5.0f );
         setResistance( 10.0f );
         setStepSound( Block.soundTypeMetal );
-        setBlockName( "qcraft:qblock" );
+        setBlockName("qcraft:qblock");
     }
 
     @Override
@@ -213,10 +211,11 @@ public class BlockQBlock extends BlockSand
 
     // IQuantumObservable implementation
 
+
     @Override
-    public boolean isObserved( World world, int x, int y, int z, int side )
+    public boolean isObserved(World world, BlockPos pos, int side)
     {
-        TileEntity entity = world.getTileEntity( x, y, z );
+        TileEntity entity = world.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             TileEntityQBlock qBlock = (TileEntityQBlock) entity;
@@ -229,9 +228,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public void observe( World world, int x, int y, int z, int side )
+    public void observe(World world, BlockPos pos, int side)
     {
-        TileEntity entity = world.getTileEntity( x, y, z );
+        TileEntity entity = world.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             TileEntityQBlock qBlock = (TileEntityQBlock) entity;
@@ -240,9 +239,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public void reset( World world, int x, int y, int z, int side )
+    public void reset(World world, BlockPos pos, int side)
     {
-        TileEntity entity = world.getTileEntity( x, y, z );
+        TileEntity entity = world.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             TileEntityQBlock qBlock = (TileEntityQBlock) entity;
@@ -275,9 +274,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public boolean isNormalCube( IBlockAccess world, int x, int y, int z )
+    public boolean isNormalCube(IBlockAccess world, BlockPos pos)
     {
-        Block block = getImpostorBlock( world, x, y, z );
+        Block block = getImpostorBlock(world, pos.getX(), pos.getY(), pos.getZ());
         if( block != null && !( block instanceof BlockCompressedPowered ) && block != Blocks.ice && block != Blocks.packed_ice && block != Blocks.glass && block != Blocks.stained_glass )
         {
             return true;
@@ -291,7 +290,7 @@ public class BlockQBlock extends BlockSand
         Block block = getImpostorBlock( world, x, y, z );
         if( block == Blocks.grass )
         {
-            return block.colorMultiplier( world, x, y, z );
+            return block.colorMultiplier(world, new BlockPos(x, y, z));
         }
         return 0xffffff;
     }
@@ -320,7 +319,7 @@ public class BlockQBlock extends BlockSand
         // Add AABB if so
         if( solid )
         {
-            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
+            AxisAlignedBB aabb = AxisAlignedBB.fromBounds(
                     (double) x, (double) y, (double) z,
                     (double) x + 1.0, (double) y + 1.0, (double) z + 1.0
             );
@@ -332,7 +331,7 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public boolean isReplaceable( IBlockAccess world, int x, int y, int z )
+    public boolean isReplaceable(IBlockAccess world, BlockPos pos)
     {
         /*
 		Appearance appearance = getAppearance( world, x, y, z );
@@ -364,14 +363,14 @@ public class BlockQBlock extends BlockSand
     public AxisAlignedBB getCollisionBoundingBoxFromPool( World world, int x, int y, int z )
     {
         setBlockBoundsBasedOnState( world, x, y, z );
-        return super.getCollisionBoundingBoxFromPool( world, x, y, z );
+        return super.getCollisionBoundingBox(world, x, y, z);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool( World world, int x, int y, int z )
     {
         setBlockBoundsBasedOnState( world, x, y, z );
-        return super.getSelectedBoundingBoxFromPool( world, x, y, z );
+        return super.getSelectedBoundingBox(world, x, y, z);
     }
 
     @Override
@@ -634,16 +633,17 @@ public class BlockQBlock extends BlockSand
         int x = (int) ( entityFallingSand.posX - 0.5f );
         int y = (int) ( entityFallingSand.posY - 0.5f );
         int z = (int) ( entityFallingSand.posZ - 0.5f );
-        TileEntity entity = world.getTileEntity( x, y, z );
+        BlockPos pos = new BlockPos(x, y, z);
+        TileEntity entity = world.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             NBTTagCompound nbttagcompound = new NBTTagCompound();
             entity.writeToNBT( nbttagcompound );
-            entityFallingSand.field_145810_d = nbttagcompound; // data
+            entityFallingSand.tileEntityData = nbttagcompound; // data
         }
 
         // Prevent the falling qBlock from dropping items
-        entityFallingSand.field_145813_c = false; // dropItems
+        entityFallingSand.shouldDropItem = false; // dropItems
     }
 
     @Override
@@ -653,9 +653,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public boolean canConnectRedstone( IBlockAccess world, int x, int y, int z, int side )
+    public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, int side)
     {
-        Block block = getImpostorBlock( world, x, y, z );
+        Block block = getImpostorBlock(world, pos);
         if( block != null && block instanceof BlockCompressedPowered )
         {
             return true;
@@ -664,9 +664,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public int isProvidingWeakPower( IBlockAccess world, int x, int y, int z, int side )
+    public int isProvidingWeakPower(IBlockAccess world, BlockPos pos, int side)
     {
-        Block block = getImpostorBlock( world, x, y, z );
+        Block block = getImpostorBlock(world, pos);
         if( block != null && block instanceof BlockCompressedPowered )
         {
             return 15;
@@ -675,9 +675,9 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public int getLightValue( IBlockAccess world, int x, int y, int z )
+    public int getLightValue(IBlockAccess world, BlockPos pos)
     {
-        Block block = getImpostorBlock( world, x, y, z );
+        Block block = getImpostorBlock(world, pos);
         if( block != null )
         {
             return block.getLightValue();
@@ -764,9 +764,9 @@ public class BlockQBlock extends BlockSand
         return createNewTileEntity( world, metadata );
     }
 
-    private Appearance getAppearance( IBlockAccess world, int x, int y, int z )
+    private Appearance getAppearance(IBlockAccess world, BlockPos pos)
     {
-        TileEntity entity = world.getTileEntity( x, y, z );
+        TileEntity entity = world.getTileEntity(pos);
         if( entity != null && entity instanceof TileEntityQBlock )
         {
             TileEntityQBlock quantum = (TileEntityQBlock) entity;
@@ -775,12 +775,12 @@ public class BlockQBlock extends BlockSand
         return Appearance.Fuzz;
     }
 
-    private int getImpostorType( IBlockAccess world, int x, int y, int z )
+    private int getImpostorType(IBlockAccess world, BlockPos pos)
     {
         int type = 0;
-        if( y >= 0 )
+        if (pos.getY() >= 0)
         {
-            TileEntity entity = world.getTileEntity( x, y, z );
+            TileEntity entity = world.getTileEntity(pos);
             if( entity != null && entity instanceof TileEntityQBlock )
             {
                 TileEntityQBlock quantum = (TileEntityQBlock) entity;
@@ -790,10 +790,10 @@ public class BlockQBlock extends BlockSand
         return type;
     }
 
-    public Block getImpostorBlock( IBlockAccess world, int x, int y, int z )
+    public Block getImpostorBlock(IBlockAccess world, BlockPos pos)
     {
         // Return block
-        int type = getImpostorType( world, x, y, z );
+        int type = getImpostorType(world, pos);
         ItemStack[] blockList = getImpostorBlockList();
         if( type < blockList.length )
         {
@@ -806,10 +806,10 @@ public class BlockQBlock extends BlockSand
         return null;
     }
 
-    private int getImpostorDamage( IBlockAccess world, int x, int y, int z )
+    private int getImpostorDamage(IBlockAccess world, BlockPos pos)
     {
         // Return damage
-        int type = getImpostorType( world, x, y, z );
+        int type = getImpostorType(world, pos);
         ItemStack[] blockList = getImpostorBlockList();
         if( type < blockList.length )
         {

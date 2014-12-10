@@ -29,7 +29,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Facing;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -162,9 +162,9 @@ public class TileEntityQBlock extends TileEntity
 
     private void blockUpdate()
     {
-        worldObj.markBlockForUpdate( xCoord, yCoord, zCoord );
-        worldObj.scheduleBlockUpdate( xCoord, yCoord, zCoord, QCraft.Blocks.qBlock, QCraft.Blocks.qBlock.tickRate( worldObj ) );
-        worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, QCraft.Blocks.qBlock );
+        worldObj.markBlockForUpdate(pos);
+        worldObj.scheduleBlockUpdate(pos, QCraft.Blocks.qBlock, QCraft.Blocks.qBlock.tickRate(worldObj));
+        worldObj.notifyBlocksOfNeighborChange(pos, QCraft.Blocks.qBlock);
     }
 
     public boolean isForceObserved( int side )
@@ -240,9 +240,7 @@ public class TileEntityQBlock extends TileEntity
         }
         else if( position.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK )
         {
-            if( position.blockX == xCoord &&
-                    position.blockY == yCoord &&
-                    position.blockZ == zCoord )
+            if (position.func_178782_a() == getPos())
             {
                 return true;
             }
@@ -254,9 +252,9 @@ public class TileEntityQBlock extends TileEntity
     {
         // Collect votes from all observers
         int[] votes = new int[ 6 ];
-        double centerX = (double) xCoord + 0.5;
-        double centerY = (double) yCoord + 0.5;
-        double centerZ = (double) zCoord + 0.5;
+        double centerX = (double) pos.getX() + 0.5;
+        double centerY = (double) pos.getY() + 0.5;
+        double centerZ = (double) pos.getZ() + 0.5;
 
         // For each player:
         List players = worldObj.playerEntities;
@@ -282,7 +280,7 @@ public class TileEntityQBlock extends TileEntity
 
                 // Get position info:
                 double x = player.posX - centerX;
-                double y = player.posY + 1.62 - (double) player.yOffset - centerY;
+                double y = player.posY + 1.62 - (double) player - centerY;
                 double z = player.posZ - centerZ;
 
                 // Check distance:
@@ -314,15 +312,15 @@ public class TileEntityQBlock extends TileEntity
                         if( QCraft.enableQBlockOcclusionTesting )
                         {
                             // Do some occlusion tests
-                            Vec3 playerPos = Vec3.createVectorHelper( centerX + x, centerY + y, centerZ + z );
+                            Vec3 playerPos = Vec3.createVectorHelper(centerX + x, centerY + y, centerZ + z);
                             boolean lineOfSightFound = false;
                             for( int side = 0; side < 6; ++side )
                             {
                                 // Only check faces that are facing the player
                                 Vec3 sideNormal = Vec3.createVectorHelper(
-                                        0.49 * Facing.offsetsXForSide[ side ],
-                                        0.49 * Facing.offsetsYForSide[ side ],
-                                        0.49 * Facing.offsetsZForSide[ side ]
+                                        0.49 * Facing.offsetsXForSide[side],
+                                        0.49 * Facing.offsetsYForSide[side],
+                                        0.49 * Facing.offsetsZForSide[side]
                                 );
                                 Vec3 blockPos = Vec3.createVectorHelper(
                                         centerX + sideNormal.xCoord,
@@ -553,10 +551,10 @@ public class TileEntityQBlock extends TileEntity
     {
         for( int i = 1; i < 6; ++i ) // ignore down
         {
-            int x = xCoord + Facing.offsetsXForSide[ i ];
-            int y = yCoord + Facing.offsetsYForSide[ i ];
-            int z = zCoord + Facing.offsetsZForSide[ i ];
-            Block block = worldObj.getBlock( x, y, z );
+            int x = getPos().getX() + Facing.offsetsXForSide[i];
+            int y = getPos().getY() + Facing.offsetsYForSide[i];
+            int z = getPos().getZ() + Facing.offsetsZForSide[i];
+            Block block = worldObj.getBlockState(new BlockPos(x, y, z)).getBlock();
             if( block != null && block instanceof BlockLiquid )
             {
                 return true;
@@ -624,20 +622,20 @@ public class TileEntityQBlock extends TileEntity
         // Communicate sides and frequency, changing state is calculated on the fly
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         writeToNBT( nbttagcompound );
-        return new S35PacketUpdateTileEntity( this.xCoord, this.yCoord, this.zCoord, 0, nbttagcompound );
+        return new S35PacketUpdateTileEntity(this.getPos(), 0, nbttagcompound);
     }
 
     @Override
     public void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity packet )
     {
-        switch( packet.func_148853_f() ) // actionType
+        switch (packet.getTileEntityType()) // actionType
         {
             case 0:
             {
                 // Receive sides and frequency
                 int oldSide = m_currentDisplayedSide;
                 int oldType = getObservedType();
-                NBTTagCompound nbttagcompound = packet.func_148857_g(); // data
+                NBTTagCompound nbttagcompound = packet.getNbtCompound(); // data
                 readFromNBT( nbttagcompound );
                 int newType = getObservedType();
 

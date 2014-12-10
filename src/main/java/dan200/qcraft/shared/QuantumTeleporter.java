@@ -19,6 +19,7 @@ package dan200.qcraft.shared;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 
@@ -36,9 +37,9 @@ public class QuantumTeleporter extends Teleporter
         m_zPos = zPos;
     }
 
+
     @Override
-    public void placeInPortal( Entity entity, double par2, double par4, double par6, float par8 )
-    {
+    public void func_180266_a(Entity entity, float p_180266_2_) {
         if( entity instanceof EntityPlayer )
         {
             ((EntityPlayer)entity).setPositionAndUpdate( m_xPos, m_yPos, m_zPos );
@@ -47,8 +48,7 @@ public class QuantumTeleporter extends Teleporter
     }
 
     @Override
-    public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
-    {
+    public boolean func_180620_b(Entity p_180620_1_, float p_180620_2_) {
         return false;
     }
 

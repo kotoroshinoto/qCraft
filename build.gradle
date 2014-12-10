@@ -22,7 +22,7 @@ group = "dan200.qcraft"
 archivesBaseName = "qCraft"
 
 minecraft {
-    version = "1.7.10-10.13.0.1180"
+    version = "1.8-11.14.0.1261-1.8"
     assetDir = "run/assets"
     replace '${version}', project.version
 }
