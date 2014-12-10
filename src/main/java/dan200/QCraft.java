@@ -50,6 +50,18 @@ import java.io.IOException;
 import java.security.PublicKey;
 import java.util.*;
 
+/*
+ * TODO:
+ *      Replace all coords (x,y,z) with BlockPos object
+ *      Find and use correct rendering methods to register icons
+ *      Make use of IBlockState (Seriously, why mojang, why?)
+ *      Find and use replacement for Facing.
+ *      Metadata might have been turned into either IBlockState or EnumFacing. Investigate?
+ *      Find and use RenderBlock replacement
+ *
+ *
+ */
+
 ///////////////
 // UNIVERSAL //
 ///////////////
