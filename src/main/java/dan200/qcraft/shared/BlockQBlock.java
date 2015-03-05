@@ -535,8 +535,7 @@ public class BlockQBlock extends BlockSand
     }
 
     @Override
-    public boolean removedByPlayer( World world, EntityPlayer player, int x, int y, int z )
-    {
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         if( world.isRemote )
         {
             return false;
@@ -576,11 +575,11 @@ public class BlockQBlock extends BlockSand
                 }
             }
         }
-        return super.removedByPlayer( world, player, x, y, z );
+        return super.removedByPlayer(world, player, x, y, z, willHarvest);
     }
 
     @Override
-    public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z )
+    public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         TileEntity entity = world.getTileEntity( x, y, z );
         if( entity != null && entity instanceof TileEntityQBlock )

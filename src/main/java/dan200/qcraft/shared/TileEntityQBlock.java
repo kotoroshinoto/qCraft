@@ -487,6 +487,7 @@ public class TileEntityQBlock extends TileEntity
                             votes = addVotes( votes, twin.collectVotes() );
                         }
                     }
+                    it.remove();
                 }
             }
         }

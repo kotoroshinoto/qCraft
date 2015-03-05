@@ -78,12 +78,6 @@ public class BlockQuantumComputer extends BlockDirectional
     }
 
     @Override
-    public void dropBlockAsItemWithChance( World world, int x, int y, int z, int side, float f, int unknown )
-    {
-        // RemoveBlockByPlayer handles this instead
-    }
-
-    @Override
     public ArrayList<ItemStack> getDrops( World world, int x, int y, int z, int metadata, int fortune )
     {
         ArrayList<ItemStack> blocks = new ArrayList<ItemStack>();
@@ -105,7 +99,7 @@ public class BlockQuantumComputer extends BlockDirectional
     }
 
     @Override
-    public boolean removedByPlayer( World world, EntityPlayer player, int x, int y, int z )
+    public boolean removedByPlayer( World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
     {
         if( world.isRemote )
         {
@@ -125,11 +119,11 @@ public class BlockQuantumComputer extends BlockDirectional
             }
         }
 
-        return super.removedByPlayer( world, player, x, y, z );
+        return super.removedByPlayer( world, player, x, y, z, willHarvest);
     }
 
     @Override
-    public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z )
+    public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         int metadata = world.getBlockMetadata( x, y, z );
         ArrayList<ItemStack> items = getDrops( world, x, y, z, metadata, 0 );
