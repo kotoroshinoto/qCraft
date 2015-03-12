@@ -1561,9 +1561,29 @@ public class TileEntityQuantumComputer extends TileEntity
                     stack.writeToNBT( itemTag );
                     //KOTOROSHINOTO's EDIT
                     GameRegistry.UniqueIdentifier itemUID=GameRegistry.findUniqueIdentifierFor(stack.getItem());
-                    itemTag.setString("modID", itemUID.modId);
-                    itemTag.setString("itemName", itemUID.name);
-                    items.appendTag( itemTag );
+                    String itemModID="";
+                    String itemName="";
+                    if(itemUID != null) {
+                        if (itemUID.modId != null) {
+                            itemModID = itemUID.modId;
+                        } else {
+                            QCraft.log("Unique identifier from the gameregistry did not contain a modID, skipping item");
+                            continue;
+                        }
+                        if (itemUID.name != null) {
+                            itemName = itemUID.name;
+                        } else {
+                            QCraft.log("Unique identifier from the gameregistry did not contain a name, skipping item");
+                            continue;
+                        }
+                    } else {
+                        QCraft.log("An ItemStack did not return a unique identifier from the gameregistry, skipping it");
+                        continue;
+                    }
+                    itemTag.setString("modID", itemModID);
+                    itemTag.setString("itemName", itemName);
+                    //END OF KOTOROSHINOTO's EDIT
+                    items.appendTag(itemTag );
 
                     // Remove items
                     playerInventory.setInventorySlotContents( i, null );
