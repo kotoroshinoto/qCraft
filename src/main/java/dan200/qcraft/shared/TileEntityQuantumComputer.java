@@ -18,6 +18,7 @@ limitations under the License.
 package dan200.qcraft.shared;
 
 import com.google.common.base.CaseFormat;
+import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.QCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPane;
@@ -1558,6 +1559,10 @@ public class TileEntityQuantumComputer extends TileEntity
                     // Store items
                     NBTTagCompound itemTag = new NBTTagCompound();
                     stack.writeToNBT( itemTag );
+                    //KOTOROSHINOTO's EDIT
+                    GameRegistry.UniqueIdentifier itemUID=GameRegistry.findUniqueIdentifierFor(stack.getItem());
+                    itemTag.setString("modID", itemUID.modId);
+                    itemTag.setString("itemName", itemUID.name);
                     items.appendTag( itemTag );
 
                     // Remove items

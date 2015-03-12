@@ -25,6 +25,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.qcraft.shared.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -32,6 +33,7 @@ import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
@@ -821,6 +823,17 @@ public class QCraft
                     for( int i=0; i<items.tagCount(); ++i )
                     {
                         NBTTagCompound item = items.getCompoundTagAt( i );
+                        //KOTOROSHINOTO's EDIT
+                        String itemModID=item.getString("modID");
+                        item.removeTag("modID");
+                        String itemName=item.getString("itemName");
+                        item.removeTag("itemName");
+                        Item incomingItem=GameRegistry.findItem(itemModID, itemName);
+                        //WARNING make sure this is using the right type
+                        // i used short b/c NBT editor showed my
+                        // player's inventory with "s" icons for their id tags
+                        item.setShort("id",(short)Item.getIdFromItem(incomingItem));
+                        //END KOTOROSHINOTO'S EDIT
                         ItemStack stack = ItemStack.loadItemStackFromNBT( item );
                         if( !entityPlayer.inventory.addItemStackToInventory( stack ) )
                         {
