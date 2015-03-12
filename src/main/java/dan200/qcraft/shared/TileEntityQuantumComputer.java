@@ -1560,28 +1560,19 @@ public class TileEntityQuantumComputer extends TileEntity
                     NBTTagCompound itemTag = new NBTTagCompound();
                     stack.writeToNBT( itemTag );
                     //KOTOROSHINOTO's EDIT
-                    GameRegistry.UniqueIdentifier itemUID=GameRegistry.findUniqueIdentifierFor(stack.getItem());
-                    String itemModID="";
-                    String itemName="";
-                    if(itemUID != null) {
-                        if (itemUID.modId != null) {
-                            itemModID = itemUID.modId;
-                        } else {
-                            QCraft.log("Unique identifier from the gameregistry did not contain a modID, skipping item");
-                            continue;
-                        }
-                        if (itemUID.name != null) {
-                            itemName = itemUID.name;
-                        } else {
-                            QCraft.log("Unique identifier from the gameregistry did not contain a name, skipping item");
-                            continue;
-                        }
-                    } else {
-                        QCraft.log("An ItemStack did not return a unique identifier from the gameregistry, skipping it");
+                    String delegateName=stack.getItem().delegate.name();
+                    if(delegateName == null || delegateName.compareTo("")==0) {
+                        QCraft.log("An ItemStack did not return a name from the gameregistry, skipping it");
                         continue;
                     }
-                    itemTag.setString("modID", itemModID);
-                    itemTag.setString("itemName", itemName);
+                    int colonindex=delegateName.indexOf(':'),lcolonindex=delegateName.lastIndexOf(':');
+                    if(colonindex == -1 || (colonindex != lcolonindex)){
+                        QCraft.log("Name from the gameregistry would not split into 2 strings around a ':' character, must skip it: " + delegateName);
+                        continue;
+                    }
+                    String[] splitname=delegateName.split(":");
+                    itemTag.setString("modID", splitname[0]);
+                    itemTag.setString("itemName", splitname[1]);
                     //END OF KOTOROSHINOTO's EDIT
                     items.appendTag(itemTag );
 

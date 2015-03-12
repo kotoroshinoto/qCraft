@@ -824,15 +824,9 @@ public class QCraft
                     {
                         NBTTagCompound item = items.getCompoundTagAt( i );
                         //KOTOROSHINOTO's EDIT
-                        String itemModID=item.getString("modID");
+                        item.setShort("id",(short)Item.getIdFromItem(GameRegistry.findItem(item.getString("modID"), item.getString("itemName"))));
                         item.removeTag("modID");
-                        String itemName=item.getString("itemName");
                         item.removeTag("itemName");
-                        Item incomingItem=GameRegistry.findItem(itemModID, itemName);
-                        //WARNING make sure this is using the right type
-                        // i used short b/c NBT editor showed my
-                        // player's inventory with "s" icons for their id tags
-                        item.setShort("id",(short)Item.getIdFromItem(incomingItem));
                         //END KOTOROSHINOTO'S EDIT
                         ItemStack stack = ItemStack.loadItemStackFromNBT( item );
                         if( !entityPlayer.inventory.addItemStackToInventory( stack ) )
